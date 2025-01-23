@@ -40,6 +40,37 @@ public interface AdminService{
 	 * @return
 	 */
 	int restoreBoard(int boardNo);
+
+	/** 회원가입 7일 이내 유저 조회
+	 * @return
+	 */
+	List<Member> getNewMember();
+
+	/** 최대 조회수 게시글 조회
+	 * @return
+	 */
+	Board maxReadCount();
+
+	/** 가장 좋아요 많은 게시글
+	 * @return
+	 */
+	Board maxLikeCount();
+
+	/** 가장 댓글 많은 게시글
+	 * @return
+	 */
+	Board maxCommentCount();
+
+	/** 관리자 계정 목록 조회
+	 * @return
+	 */
+	List<Member> adminAccountList();
+
+	/** 관리자 계정 발급
+	 * @param member
+	 * @return
+	 */
+	String createAdminAccount(Member member);
 	
 
 }

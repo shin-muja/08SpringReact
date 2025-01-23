@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
+/**
+ * 
+ */
 @RestController
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequestMapping("admin")
@@ -50,7 +53,9 @@ public class AdminController {
 			return null;
 		}
 		
-		model.addAttribute("loginMember", loginMember);
+//		model.addAttribute("loginMember", loginMember);
+		model.addAttribute(loginMember);
+		
 		return loginMember;
 	}
 	
@@ -169,6 +174,113 @@ public class AdminController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("삭제한 게시글 복구 중 문제가 발생했습니다 : " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * @return
+	 */
+	// 새로운 가입 회원 조회
+	@GetMapping("newMember")
+	public ResponseEntity<List<Member>> getNewMember() {
+		try {
+			
+			List<Member> newMemberList = service.getNewMember();
+			return ResponseEntity.status(HttpStatus.OK).body(newMemberList);
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+			// 응답 코드 500 에러, 응답 값 null;
+		}
+	}
+	
+	
+	/** 최대 조회 게시글
+	 * @return
+	 */
+	@GetMapping("maxReadCount")
+	public ResponseEntity<Object> maxReadCount() {
+		
+		try {
+			
+			Board board = service.maxReadCount();
+			return ResponseEntity.status(HttpStatus.OK).body(board);
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+		
+	}
+	
+	/** 가장 좋아요 많은 게시글
+	 * @return
+	 */
+	@GetMapping("maxLikeCount")
+	public ResponseEntity<Board> maxLikeCount() {
+		
+		try {
+			
+			Board board = service.maxLikeCount();
+			return ResponseEntity.status(HttpStatus.OK).body(board);
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	
+	/** 가장 댓글 많은 게시
+	 * @return
+	 */
+	@GetMapping("maxCommentCount")
+	public ResponseEntity<Board> maxCommentCount() {
+		
+		try {
+			
+			Board board = service.maxCommentCount();
+			return ResponseEntity.status(HttpStatus.OK).body(board);
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+		
+	}
+	
+	/** 관리자 계정 목록 조회
+	 * @return
+	 */
+	@GetMapping("adminAccountList")
+	public ResponseEntity<Object> adminAccountList() {
+		try {
+			
+			List<Member> adminList = service.adminAccountList();
+			return ResponseEntity.status(HttpStatus.OK).body(adminList);
+			
+		} catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	
+	/** 관리자 계정 발급
+	 * @param member
+	 * @return
+	 */
+	@PostMapping("createAdminAccount")
+	public ResponseEntity<String> createAdminAccount(@RequestBody Member member) {
+		try {
+			
+			String accountPw = service.createAdminAccount(member);
+			
+			if(accountPw != null) {
+				// 201(자원이 성공적으로 생성 되었음을 나타냄)
+				return ResponseEntity.status(HttpStatus.CREATED).body(accountPw);
+			} else {
+				// 204 (콘텐츠 없음)
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+			}
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) //500
+					.body(null);
 		}
 	}
 	
